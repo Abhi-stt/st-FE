@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Navigation } from '@/components/Navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Library, BookOpen, Trash2, Download, Plus } from 'lucide-react';
+import { toast } from 'sonner';
+
+const LibraryPage = () => {
+  const [savedStories, setSavedStories] = useState<any[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const stories = JSON.parse(localStorage.getItem('savedStories') || '[]');
+    setSavedStories(stories);
+  }, []);
+
+  const handleDeleteStory = (storyId: string) => {
+    const updatedStories = savedStories.filter(story => story.id !== storyId);
+    setSavedStories(updatedStories);
+    localStorage.setItem('savedStories', JSON.stringify(updatedStories));
+    toast.success('Story deleted from library');
+  };
+
+  const handleDownloadStory = (story: any) => {
+    toast.success(`Downloading "${story.title}" (Demo only)`);
+  };
+
+  const handleReadStory = (storyId: string) => {
+    navigate(`/story/${storyId}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-background">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="flex items-center justify-center gap-2 mb-4"
+            >
+              <Library className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl font-display font-bold text-primary">My Story Library</h1>
+            </motion.div>
+            <p className="text-lg text-muted-foreground mb-6">
+              Your collection of magical stories
+            </p>
+            <Button
+              onClick={() => navigate('/generate')}
+              className="magical-button flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Create New Story
+            </Button>
+          </div>
+
+          {/* Stories Grid */}
+          {savedStories.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-center py-16"
+            >
+              <BookOpen className="h-24 w-24 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-2xl font-display font-bold text-foreground mb-2">
+                No stories yet
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Create your first magical story to get started!
+              </p>
+              <Button
+                onClick={() => navigate('/generate')}
+                className="magical-button"
+              >
+                Create Your First Story
+              </Button>
+            </motion.div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {savedStories.map((story, index) => (
+                <motion.div
+                  key={story.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                >
+                  <Card className="story-card group cursor-pointer h-full">
+                    <CardHeader className="pb-4">
+                      <div className="aspect-video bg-gradient-secondary rounded-lg mb-4 flex items-center justify-center">
+                        <BookOpen className="h-12 w-12 text-secondary-foreground opacity-50" />
+                      </div>
+                      <CardTitle className="text-lg font-display line-clamp-2">
+                        {story.title}
+                      </CardTitle>
+                      <CardDescription>
+                        {story.chapters?.length || 0} chapters • Saved {new Date(story.savedAt).toLocaleDateString()}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleReadStory(story.id)}
+                          size="sm"
+                          className="flex-1 magical-button text-sm"
+                        >
+                          <BookOpen className="h-3 w-3 mr-1" />
+                          Read
+                        </Button>
+                        <Button
+                          onClick={() => handleDownloadStory(story)}
+                          size="sm"
+                          variant="outline"
+                          className="px-3"
+                        >
+                          <Download className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteStory(story.id)}
+                          size="sm"
+                          variant="outline"
+                          className="px-3 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default LibraryPage;

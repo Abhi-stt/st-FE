@@ -1,42 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Storybook Magic Design System - All colors MUST be HSL */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - Soft storybook palette */
+    --background: 320 20% 97%;
+    --foreground: 240 10% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 10% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 240 10% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Magical Purple */
+    --primary: 260 65% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 260 45% 75%;
+    --primary-dark: 260 85% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Soft Coral */
+    --secondary: 15 75% 80%;
+    --secondary-foreground: 240 10% 15%;
+    --secondary-light: 15 55% 90%;
+    --secondary-dark: 15 95% 60%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - Mint Green */
+    --accent: 160 45% 75%;
+    --accent-foreground: 240 10% 15%;
+    --accent-light: 160 35% 85%;
+    --accent-dark: 160 65% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Supporting colors */
+    --muted: 320 15% 90%;
+    --muted-foreground: 240 5% 45%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 320 20% 88%;
+    --input: 320 20% 92%;
+    --ring: 260 65% 55%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Story theme colors */
+    --story-adventure: 25 95% 65%;
+    --story-fantasy: 280 75% 70%;
+    --story-friendship: 350 70% 75%;
+    --story-space: 230 85% 60%;
+    --story-underwater: 195 85% 65%;
+    --story-forest: 120 55% 55%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary-light)) 100%);
+    --gradient-magical: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--secondary)) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(320 25% 95%) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -2px hsl(var(--primary) / 0.1);
+    --shadow-magical: 0 8px 30px -5px hsl(var(--primary) / 0.2);
+    --shadow-story: 0 12px 40px -8px hsl(var(--primary) / 0.15);
 
     --sidebar-background: 0 0% 98%;
 
@@ -52,45 +82,30 @@ All colors MUST be HSL.
 
     --sidebar-border: 220 13% 91%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    /* Dark mode with magical theme */
+    --background: 240 15% 8%;
+    --foreground: 320 20% 95%;
+    --card: 240 15% 10%;
+    --card-foreground: 320 20% 95%;
+    --primary: 260 75% 65%;
+    --primary-light: 260 55% 80%;
+    --secondary: 15 65% 70%;
+    --accent: 160 55% 65%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 60%;
+    --border: 240 15% 20%;
+    --input: 240 15% 18%;
+    --sidebar-background: 240 15% 10%;
+    --sidebar-foreground: 320 20% 95%;
+    --sidebar-primary: 260 75% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 320 20% 95%;
+    --sidebar-border: 240 15% 20%;
+    --sidebar-ring: 260 75% 65%;
   }
 }
 
@@ -100,6 +115,108 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    background: var(--gradient-background);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* Custom component styles using design system */
+  .story-card {
+    @apply bg-card border border-border rounded-2xl p-6;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .story-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-magical);
+  }
+
+  .magical-button {
+    @apply relative overflow-hidden rounded-2xl px-8 py-4 font-semibold text-primary-foreground;
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .magical-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-magical);
+  }
+
+  .magical-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.5s;
+  }
+
+  .magical-button:hover::before {
+    left: 100%;
+  }
+
+  .theme-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    background: var(--gradient-secondary);
+    color: hsl(var(--secondary-foreground));
+  }
+
+  .story-input {
+    @apply w-full rounded-xl border border-border bg-card px-4 py-3 text-card-foreground;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .story-input:focus {
+    @apply outline-none ring-2 ring-primary border-primary;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .floating-element {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .slide-up {
+    animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
