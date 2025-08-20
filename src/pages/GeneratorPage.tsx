@@ -7,17 +7,157 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Wand2, BookOpen } from 'lucide-react';
+import { VisualSelect } from '@/components/ui/visual-select';
+import { Sparkles, Wand2, BookOpen, Mountain, Castle, Heart, Rocket, Waves, TreePine, Zap, Clock, Crown, Atom, Leaf, Flame, Anchor, Bot, Brush, Palette, Layers, Grid3X3, Gamepad2, BookOpenCheck, Zap as Lightning, Minimize } from 'lucide-react';
 
-const themes = [
-  'Adventure', 'Fantasy', 'Friendship', 'Space Journey', 'Underwater World',
-  'Magical Forest', 'Superheroes', 'Time Travel', 'Fairy Tales', 'Science Fiction',
-  'Jungle Safari', 'Mythical Creatures', 'Pirates & Treasure Hunt', 'Robot World'
+// Import theme images
+import adventureImg from '@/assets/themes/adventure.jpg';
+import fantasyImg from '@/assets/themes/fantasy.jpg';
+import spaceImg from '@/assets/themes/space-journey.jpg';
+import underwaterImg from '@/assets/themes/underwater-world.jpg';
+
+// Import art style images
+import animeImg from '@/assets/art-styles/anime.jpg';
+import watercolorImg from '@/assets/art-styles/watercolor.jpg';
+import pixelArtImg from '@/assets/art-styles/pixel-art.jpg';
+import classicStorybookImg from '@/assets/art-styles/classic-storybook.jpg';
+
+const themeOptions = [
+  {
+    value: 'adventure',
+    label: 'Adventure',
+    image: adventureImg,
+    description: 'Exciting journeys and exploration'
+  },
+  {
+    value: 'fantasy',
+    label: 'Fantasy',
+    image: fantasyImg,
+    description: 'Magical worlds with mythical creatures'
+  },
+  {
+    value: 'friendship',
+    label: 'Friendship',
+    icon: <Heart className="h-5 w-5 text-pink-500" />,
+    description: 'Stories about bonds and relationships'
+  },
+  {
+    value: 'space-journey',
+    label: 'Space Journey',
+    image: spaceImg,
+    description: 'Cosmic adventures among the stars'
+  },
+  {
+    value: 'underwater-world',
+    label: 'Underwater World',
+    image: underwaterImg,
+    description: 'Ocean depths and sea creatures'
+  },
+  {
+    value: 'magical-forest',
+    label: 'Magical Forest',
+    icon: <TreePine className="h-5 w-5 text-green-500" />,
+    description: 'Enchanted woods full of wonders'
+  },
+  {
+    value: 'superheroes',
+    label: 'Superheroes',
+    icon: <Zap className="h-5 w-5 text-yellow-500" />,
+    description: 'Heroes with amazing powers'
+  },
+  {
+    value: 'time-travel',
+    label: 'Time Travel',
+    icon: <Clock className="h-5 w-5 text-blue-500" />,
+    description: 'Adventures across different eras'
+  },
+  {
+    value: 'fairy-tales',
+    label: 'Fairy Tales',
+    icon: <Crown className="h-5 w-5 text-purple-500" />,
+    description: 'Classic magical stories'
+  },
+  {
+    value: 'science-fiction',
+    label: 'Science Fiction',
+    icon: <Atom className="h-5 w-5 text-cyan-500" />,
+    description: 'Future technology and innovations'
+  },
+  {
+    value: 'jungle-safari',
+    label: 'Jungle Safari',
+    icon: <Leaf className="h-5 w-5 text-green-600" />,
+    description: 'Wild adventures in nature'
+  },
+  {
+    value: 'mythical-creatures',
+    label: 'Mythical Creatures',
+    icon: <Flame className="h-5 w-5 text-red-500" />,
+    description: 'Dragons, unicorns, and legends'
+  },
+  {
+    value: 'pirates-treasure-hunt',
+    label: 'Pirates & Treasure Hunt',
+    icon: <Anchor className="h-5 w-5 text-amber-600" />,
+    description: 'Seafaring adventures and hidden gold'
+  },
+  {
+    value: 'robot-world',
+    label: 'Robot World',
+    icon: <Bot className="h-5 w-5 text-gray-500" />,
+    description: 'Mechanical friends and AI adventures'
+  }
 ];
 
-const artStyles = [
-  'Anime', '3D Animation', 'Watercolor', 'Pixel Art', 'Claymation',
-  'Classic Storybook', 'Comic Book', 'Flat Illustration'
+const artStyleOptions = [
+  {
+    value: 'anime',
+    label: 'Anime',
+    image: animeImg,
+    description: 'Japanese animation style with expressive characters'
+  },
+  {
+    value: '3d-animation',
+    label: '3D Animation',
+    icon: <Layers className="h-5 w-5 text-blue-500" />,
+    description: 'Modern computer-generated imagery'
+  },
+  {
+    value: 'watercolor',
+    label: 'Watercolor',
+    image: watercolorImg,
+    description: 'Soft, flowing paint effects'
+  },
+  {
+    value: 'pixel-art',
+    label: 'Pixel Art',
+    image: pixelArtImg,
+    description: 'Retro 8-bit digital style'
+  },
+  {
+    value: 'claymation',
+    label: 'Claymation',
+    icon: <Brush className="h-5 w-5 text-orange-500" />,
+    description: 'Stop-motion clay animation style'
+  },
+  {
+    value: 'classic-storybook',
+    label: 'Classic Storybook',
+    image: classicStorybookImg,
+    description: 'Traditional children\'s book illustrations'
+  },
+  {
+    value: 'comic-book',
+    label: 'Comic Book',
+    icon: <Lightning className="h-5 w-5 text-red-500" />,
+    description: 'Bold superhero comic style'
+  },
+  {
+    value: 'flat-illustration',
+    label: 'Flat Illustration',
+    icon: <Minimize className="h-5 w-5 text-indigo-500" />,
+    description: 'Clean, minimalist design'
+  }
 ];
 
 const GeneratorPage = () => {
@@ -129,34 +269,22 @@ const GeneratorPage = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="storyTheme">Story Theme *</Label>
-                <Select value={formData.storyTheme} onValueChange={(value) => handleInputChange('storyTheme', value)}>
-                  <SelectTrigger className="story-input">
-                    <SelectValue placeholder="Choose your adventure..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {themes.map((theme) => (
-                      <SelectItem key={theme} value={theme.toLowerCase().replace(/\s+/g, '-')}>
-                        {theme}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <VisualSelect
+                  options={themeOptions}
+                  value={formData.storyTheme}
+                  onValueChange={(value) => handleInputChange('storyTheme', value)}
+                  placeholder="Choose your adventure..."
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="artStyle">Illustration Style *</Label>
-                <Select value={formData.artStyle} onValueChange={(value) => handleInputChange('artStyle', value)}>
-                  <SelectTrigger className="story-input">
-                    <SelectValue placeholder="Pick your art style..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {artStyles.map((style) => (
-                      <SelectItem key={style} value={style.toLowerCase().replace(/\s+/g, '-')}>
-                        {style}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <VisualSelect
+                  options={artStyleOptions}
+                  value={formData.artStyle}
+                  onValueChange={(value) => handleInputChange('artStyle', value)}
+                  placeholder="Pick your art style..."
+                />
               </div>
 
               <motion.div
