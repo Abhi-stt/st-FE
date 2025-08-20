@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import GeneratorPage from "./pages/GeneratorPage";
 import StoryPage from "./pages/StoryPage";
@@ -20,7 +21,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/generate" element={<GeneratorPage />} />
             <Route path="/story/:id" element={<StoryPage />} />
