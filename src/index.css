@@ -98,26 +98,6 @@
     --muted-foreground: 240 5% 60%;
     --border: 240 15% 20%;
     --input: 240 15% 18%;
-    --sidebar-background: 240 15% 10%;
-    --sidebar-foreground: 320 20% 95%;
-    --sidebar-primary: 260 75% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 15%;
-    --sidebar-accent-foreground: 320 20% 95%;
-    --sidebar-border: 240 15% 20%;
-    --sidebar-ring: 260 75% 65%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans;
-    background: var(--gradient-background);
-    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -136,6 +116,56 @@
   .story-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-magical);
+  }
+
+  /* Theme and Art Style Selection Cards */
+  .theme-selection-card {
+    @apply relative cursor-pointer transition-all duration-300 ease-out;
+    transform: scale(1);
+  }
+
+  .theme-selection-card:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-magical);
+  }
+
+  .theme-selection-card.selected {
+    @apply ring-2 ring-primary ring-offset-2;
+    transform: scale(1.02);
+    box-shadow: var(--shadow-story);
+  }
+
+  .theme-icon-container {
+    @apply w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-2xl;
+    transition: all 0.3s ease;
+  }
+
+  .theme-selection-card:hover .theme-icon-container {
+    transform: scale(1.1);
+  }
+
+  .theme-selection-card.selected .theme-icon-container {
+    transform: scale(1.05);
+  }
+
+  /* Selection indicator */
+  .selection-indicator {
+    @apply absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center;
+    animation: selectionPop 0.3s ease-out;
+  }
+
+  @keyframes selectionPop {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   .magical-button {

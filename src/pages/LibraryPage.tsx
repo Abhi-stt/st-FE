@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Library, BookOpen, Trash2, Download, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { pdfsAPI } from '@/services/api';
 
 const LibraryPage = () => {
   const [savedStories, setSavedStories] = useState<any[]>([]);
+  const [downloadingStories, setDownloadingStories] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,8 +25,88 @@ const LibraryPage = () => {
     toast.success('Story deleted from library');
   };
 
-  const handleDownloadStory = (story: any) => {
-    toast.success(`Downloading "${story.title}" (Demo only)`);
+  const handleDownloadStory = async (story: any) => {
+    if (!story || !story.id) {
+      toast.error('No story available for download');
+      return;
+    }
+
+    try {
+      setDownloadingStories(prev => new Set(prev).add(story.id));
+      
+      // For real stories, use the PDF API
+      if (story.id && story.id !== 'demo') {
+        try {
+          // First generate the PDF
+          const pdfResponse = await pdfsAPI.generate(story.id);
+          console.log('PDF generated:', pdfResponse);
+          
+          // Then download it
+          const blob = await pdfsAPI.download(pdfResponse.pdf.id);
+          
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${story.title.replace(/[^a-zA-Z0-9]/g, '_')}_storybook.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          
+          toast.success('PDF downloaded successfully!');
+          return;
+        } catch (apiError) {
+          console.log('PDF API failed, trying alternative method:', apiError);
+        }
+      }
+      
+      // Fallback: Use the AI API to generate and download PDF directly
+      const storyData = {
+        theme: story.theme || 'adventure',
+        art_style: story.art_style || 'watercolor',
+        character_name: story.character_name || 'Alex',
+        character_age: story.character_age || 10,
+        character_gender: story.character_gender || 'non-binary',
+        target_age: 'children'
+      };
+      
+      // Use the AI API to generate PDF directly with Pollinations.AI
+      const response = await fetch('http://localhost:8000/api/ai/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('storyUser') ? JSON.parse(localStorage.getItem('storyUser')!).token : ''}`,
+        },
+        body: JSON.stringify(storyData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${story.title.replace(/[^a-zA-Z0-9]/g, '_')}_storybook.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success('PDF downloaded successfully!');
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download PDF. Please try again.');
+    } finally {
+      setDownloadingStories(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(story.id);
+        return newSet;
+      });
+    }
   };
 
   const handleReadStory = (storyId: string) => {
@@ -122,8 +204,10 @@ const LibraryPage = () => {
                           size="sm"
                           variant="outline"
                           className="px-3"
+                          disabled={downloadingStories.has(story.id)}
                         >
                           <Download className="h-3 w-3" />
+                          {downloadingStories.has(story.id) && <span className="ml-1 text-xs">...</span>}
                         </Button>
                         <Button
                           onClick={() => handleDeleteStory(story.id)}

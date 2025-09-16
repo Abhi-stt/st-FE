@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Download, Save, ArrowLeft, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { storiesAPI, pdfsAPI } from '@/services/api';
 
 // Mock story data
 const generateMockStory = (formData: any) => {
@@ -56,15 +57,40 @@ const StoryPage = () => {
   const [currentChapter, setCurrentChapter] = useState(0);
   const [story, setStory] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
   useEffect(() => {
-    // Simulate loading delay
-    setTimeout(() => {
-      const formData = location.state?.formData || {};
-      setStory(generateMockStory(formData));
-      setIsLoading(false);
-    }, 1000);
-  }, [location.state]);
+    const fetchStory = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Try to fetch real story from API first
+        if (id && id !== 'demo') {
+          try {
+            const storyData = await storiesAPI.getById(id);
+            setStory(storyData);
+            return;
+          } catch (error) {
+            console.log('Could not fetch story from API, using mock data:', error);
+          }
+        }
+        
+        // Fallback to mock data if API fails or it's a demo
+        const formData = location.state?.formData || {};
+        setStory(generateMockStory(formData));
+      } catch (error) {
+        console.error('Error loading story:', error);
+        toast.error('Failed to load story');
+        // Use mock data as fallback
+        const formData = location.state?.formData || {};
+        setStory(generateMockStory(formData));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStory();
+  }, [id, location.state]);
 
   const handleSaveStory = () => {
     // Save to localStorage for demo
@@ -79,9 +105,84 @@ const StoryPage = () => {
     toast.success('Story saved to your library!');
   };
 
-  const handleDownloadPDF = () => {
-    // Mock PDF download
-    toast.success('PDF download started! (Demo only)');
+  const handleDownloadPDF = async () => {
+    if (!story || !story.id) {
+      toast.error('No story available for download');
+      return;
+    }
+
+    try {
+      setIsDownloadingPDF(true);
+      
+      // For real stories, use the PDF API
+      if (story.id && story.id !== 'demo') {
+        try {
+          // First generate the PDF
+          const pdfResponse = await pdfsAPI.generate(story.id);
+          console.log('PDF generated:', pdfResponse);
+          
+          // Then download it
+          const blob = await pdfsAPI.download(pdfResponse.pdf.id);
+          
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${story.title.replace(/[^a-zA-Z0-9]/g, '_')}_storybook.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          
+          toast.success('PDF downloaded successfully!');
+          return;
+        } catch (apiError) {
+          console.log('PDF API failed, trying alternative method:', apiError);
+        }
+      }
+      
+      // Fallback: Use the AI API to generate and download PDF directly
+      const storyData = {
+        theme: story.theme || 'adventure',
+        art_style: story.art_style || 'watercolor',
+        character_name: story.character_name || 'Alex',
+        character_age: story.character_age || 10,
+        character_gender: story.character_gender || 'non-binary',
+        target_age: 'children'
+      };
+      
+      // Use the AI API to generate PDF directly
+      const response = await fetch('http://localhost:8000/api/ai/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('storyUser') ? JSON.parse(localStorage.getItem('storyUser')!).token : ''}`,
+        },
+        body: JSON.stringify(storyData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${story.title.replace(/[^a-zA-Z0-9]/g, '_')}_storybook.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success('PDF downloaded successfully!');
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download PDF. Please try again.');
+    } finally {
+      setIsDownloadingPDF(false);
+    }
   };
 
   if (isLoading) {
@@ -135,9 +236,14 @@ const StoryPage = () => {
                 <Save className="h-4 w-4" />
                 Save to Library
               </Button>
-              <Button onClick={handleDownloadPDF} variant="outline" className="flex items-center gap-2">
+              <Button 
+                onClick={handleDownloadPDF} 
+                variant="outline" 
+                className="flex items-center gap-2"
+                disabled={isDownloadingPDF}
+              >
                 <Download className="h-4 w-4" />
-                Download PDF
+                {isDownloadingPDF ? 'Generating PDF...' : 'Download PDF'}
               </Button>
             </div>
           </div>
