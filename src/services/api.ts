@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 // Helper function to get auth token
 const getAuthToken = (): string | null => {
@@ -419,7 +419,7 @@ export const usersAPI = {
 // Health check
 export const healthCheck = async () => {
   try {
-    const response = await fetch('http://localhost:8000/health');
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8000'}/health`);
     return response.ok;
   } catch (error) {
     return false;

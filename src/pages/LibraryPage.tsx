@@ -72,7 +72,7 @@ const LibraryPage = () => {
       };
       
       // Use the AI API to generate PDF directly with Pollinations.AI
-      const response = await fetch('http://localhost:8000/api/ai/generate-pdf', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ai/generate-pdf`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

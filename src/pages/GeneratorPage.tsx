@@ -225,7 +225,7 @@ const GeneratorPage = () => {
       setProgressPercentage(10);
       
       try {
-        const healthCheck = await fetch('http://localhost:8000/health', { method: 'GET' });
+        const healthCheck = await fetch(`${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8000'}/health`, { method: 'GET' });
         if (!healthCheck.ok) {
           throw new Error('Backend not responding');
         }
@@ -289,7 +289,7 @@ const GeneratorPage = () => {
         target_age: 'children'
       });
       
-      const storyResponse = await fetch('http://localhost:8000/api/ai/generate-story', {
+      const storyResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ai/generate-story`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +341,7 @@ const GeneratorPage = () => {
         try {
           console.log(`🎨 Generating illustration ${i + 1} for:`, chapter.content);
           
-          const illustrationResponse = await fetch('http://localhost:8000/api/ai/generate-illustration', {
+          const illustrationResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ai/generate-illustration`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -420,7 +420,7 @@ const GeneratorPage = () => {
         target_age: 'children'
       };
       
-      const response = await fetch('http://localhost:8000/api/ai/generate-pdf', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ai/generate-pdf`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
